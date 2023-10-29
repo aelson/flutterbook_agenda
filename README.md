@@ -1,5 +1,13 @@
 ### Agenda contacts example made with Flutter framework 
 
+Note: updated to:
+- Android API: 34
+- Flutter SDK: 3.1.3
+- gradle: 7.3.0
+- sqflite: 2.3.0
+- url_launcher: 6.0.0
+- cupertino_icons: 1.0.6
+
 This code was created for my flutter book entitled 
 "Iniciando com Flutter Framework, desenvolva aplicações móveis no Dart Side!
 " published by publisher casa do código.  :nerd_face::nerd_face::nerd_face:

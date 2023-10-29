@@ -4,7 +4,7 @@ import 'package:agenda/providers/database_provider.dart';
 
 class ContactPage extends StatefulWidget {
 
-  final Contact contact;
+  final Contact? contact;
 
   ContactPage({this.contact});
 
@@ -22,7 +22,7 @@ class _ContactPageState extends State<ContactPage> {
 
   bool _userEdited = false;
 
-  Contact _editedContact;
+  late Contact _editedContact;
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _ContactPageState extends State<ContactPage> {
     if(widget.contact == null){
       _editedContact = Contact();
     } else {
-      _editedContact = Contact.fromMap(widget.contact.toMap());
+      _editedContact = Contact.fromMap(widget.contact?.toMap());
 
       _nameController.text = _editedContact.name;
       _emailController.text = _editedContact.email;
@@ -46,12 +46,12 @@ class _ContactPageState extends State<ContactPage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue,
-          title: Text(_editedContact.name ?? "Novo Contato"),
+          title: Text(_editedContact.name == '' ? "Novo Contato" : _editedContact.name),
           centerTitle: true,
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: (){
-            if(_editedContact.name != null && _editedContact.name.isNotEmpty){
+            if(_editedContact.name.isNotEmpty){
               Navigator.pop(context, _editedContact);
             } else {
               FocusScope.of(context).requestFocus(_nameFocus);

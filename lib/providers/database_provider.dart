@@ -16,14 +16,14 @@ class DatabaseProvider {
   factory DatabaseProvider() => _instance;
 
   DatabaseProvider.internal();
-  Database _db;
+  Database? _db;
   
   Future<Database> get db async {
     if(_db != null){
-      return _db;
+      return _db!;
     } else {
       _db = await initDb();
-      return _db;
+      return _db!;
     }
   }
 
@@ -33,7 +33,7 @@ class DatabaseProvider {
 
     return await openDatabase(path, version: 1, onCreate: (Database db, int newerVersion) async {
       await db.execute(
-        "CREATE TABLE $contactTable($idColumn INTEGER PRIMARY KEY, $nameColumn TEXT, $emailColumn TEXT,"
+        "CREATE TABLE $contactTable($idColumn INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, $nameColumn TEXT, $emailColumn TEXT,"
             "$phoneColumn TEXT)"
       );
     });
@@ -45,7 +45,7 @@ class DatabaseProvider {
     return contact;
   }
 
-  Future<Contact> getContact(int id) async {
+  Future<Contact?> getContact(int id) async {
     Database dbContact = await db;
     List<Map> maps = await dbContact.query(contactTable,
       columns: [idColumn, nameColumn, emailColumn, phoneColumn],
@@ -71,29 +71,39 @@ class DatabaseProvider {
         whereArgs: [contact.id]);
   }
 
-  Future<List> getAllContacts() async {
-    Database dbContact = await db;
-    List listMap = await dbContact.rawQuery("SELECT * FROM $contactTable");
-    List<Contact> listContact = [];
-    for(Map m in listMap){
-      listContact.add(Contact.fromMap(m));
-    }
-    return listContact;
+  Future<List<Contact>> getAllContacts() async {
+    final Database dbContact = await db;
+    final List<Map<String, dynamic>> maps = await dbContact.rawQuery("SELECT * FROM $contactTable");
+    return List.generate(maps.length, (i) {
+      Contact contact = Contact();
+      contact.id = maps[i]['idColumn'] as int;
+      contact.name = maps[i]['nameColumn'] as String;
+      contact.email = maps[i]['emailColumn'] as String;
+      contact.phone = maps[i]['phoneColumn'] as String;
+      return contact;
+    });
   }
 
 }
 
 class Contact {
 
-  int id;
-  String name;
-  String email;
-  String phone;
+  late int? id;
+  late String name;
+  late String email;
+  late String phone;
 
-  Contact();
+  Contact() {
+    this.name = '';
+    this.email = '';
+    this.phone = '';
+  }
 
   // Construtor que converte os dados de mapa (JSON) para objeto do contato
-  Contact.fromMap(Map map){
+  Contact.fromMap(Map? map){
+    if (map == null) {
+      return;
+    }
     id = map[idColumn];
     name = map[nameColumn];
     email = map[emailColumn];
@@ -101,7 +111,7 @@ class Contact {
   }
 
   // Método que transforma o objeto do contato em Mapa (JSON) para armazenar no banco de dados
-  Map toMap() {
+  Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       nameColumn: name,
       emailColumn: email,
@@ -110,9 +120,7 @@ class Contact {
 
     // O id pode ser nulo caso o registro esteja sendo criado já que é o banco de dados que 
     // atribui o ID ao registro no ato de salvar
-    if(id != null){
-      map[idColumn] = id;
-    }
+    //map[idColumn] = id;
     return map;
   }
 }

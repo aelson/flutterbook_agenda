@@ -78,14 +78,14 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(contacts[index].name ?? "",
+                      Text(contacts[index].name,
                         style: TextStyle(fontSize: 22.0,
                             fontWeight: FontWeight.bold),
                       ),
-                      Text(contacts[index].email ?? "",
+                      Text(contacts[index].email,
                         style: TextStyle(fontSize: 18.0),
                       ),
-                      Text(contacts[index].phone ?? "",
+                      Text(contacts[index].phone,
                         style: TextStyle(fontSize: 18.0),
                       )
                     ],
@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
                     ),
 
                     _optionButton(context, "Excluir", (){
-                        database.deleteContact(contacts[index].id);
+                        database.deleteContact(contacts[index].id!);
                         setState(() {
                           contacts.removeAt(index);
                           Navigator.pop(context);
@@ -148,14 +148,14 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.all(10.0),
             child: ElevatedButton(
               child: Text(title,
-                style: TextStyle(color: Colors.blue, fontSize: 20.0),
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
               ),
               onPressed: pressedFunction
             ),
           );
   }
 
-  void _showContactPage({Contact contact}) async {
+  void _showContactPage({Contact? contact}) async {
     final recContact = await Navigator.push(context,
       MaterialPageRoute(builder: (context) => ContactPage(contact: contact,))
     );

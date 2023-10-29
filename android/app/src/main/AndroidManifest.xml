@@ -6,7 +6,8 @@
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name="${applicationName}"
+        android:value="2"
         android:label="agenda"
         android:icon="@mipmap/ic_launcher">
         <activity
